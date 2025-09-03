@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎨 Gradient Generator</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    body {
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+      transition: background 0.5s;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    }
+
+    p {
+      font-size: 1rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    button {
+      padding: 15px 30px;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+      color: white;
+      font-weight: 600;
+      box-shadow: 2px 4px 10px rgba(0,0,0,0.25);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 4px 6px 15px rgba(0,0,0,0.35);
+    }
+
+    .extra-btn {
+      margin-top: 15px;
+      background: #111;
+      color: white;
+      padding: 12px 25px;
+      border-radius: 10px;
+    }
+
+    .extra-btn:hover {
+      background: #333;
+    }
+
+    .code-box {
+      background: rgba(0,0,0,0.4);
+      padding: 12px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: monospace;
+      font-size: 0.9rem;
+      margin-top: 20px;
+      user-select: all;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .copied {
+      margin-top: 12px;
+      font-size: 14px;
+      color: lime;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎨 Gradient Generator</h1>
+  <p>Click the buttons to change colors and copy the CSS code below!</p>
+
+  <div class="buttons">
+    <button id="color1">#E9E327</button>
+    <button id="color2">#280A58</button>
+  </div>
+
+  <button id="randomize" class="extra-btn">✨ Randomize Both Colors</button>
+
+  <div id="codeBox" class="code-box">
+    background-image: linear-gradient(to right, #E9E327, #280A58);
+  </div>
+  <div id="copied" class="copied">✅ Copied to clipboard!</div>
+
+  <script>
+    const color1Btn = document.getElementById("color1");
+    const color2Btn = document.getElementById("color2");
+    const randomizeBtn = document.getElementById("randomize");
+    const codeBox = document.getElementById("codeBox");
+    const copiedMsg = document.getElementById("copied");
+
+    function randomColor() {
+      return "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6,"0");
+    }
+
+    function updateGradient() {
+      let color1 = color1Btn.textContent;
+      let color2 = color2Btn.textContent;
+      document.body.style.backgroundImage = `linear-gradient(to right, ${color1}, ${color2})`;
+      codeBox.textContent = `background-image: linear-gradient(to right, ${color1}, ${color2});`;
+    }
+
+    color1Btn.addEventListener("click", () => {
+      color1Btn.textContent = randomColor();
+      color1Btn.style.background = color1Btn.textContent;
+      updateGradient();
+    });
+
+    color2Btn.addEventListener("click", () => {
+      color2Btn.textContent = randomColor();
+      color2Btn.style.background = color2Btn.textContent;
+      updateGradient();
+    });
+
+    randomizeBtn.addEventListener("click", () => {
+      color1Btn.textContent = randomColor();
+      color2Btn.textContent = randomColor();
+      color1Btn.style.background = color1Btn.textContent;
+      color2Btn.style.background = color2Btn.textContent;
+      updateGradient();
+    });
+
+    codeBox.addEventListener("click", () => {
+      navigator.clipboard.writeText(codeBox.textContent);
+      copiedMsg.style.display = "block";
+      setTimeout(() => copiedMsg.style.display = "none", 1500);
+    });
+
+    // Initialize
+    color1Btn.style.background = color1Btn.textContent;
+    color2Btn.style.background = color2Btn.textContent;
+    updateGradient();
+  </script>
+</body>
+</html>
