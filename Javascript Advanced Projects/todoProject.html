@@ -4,6 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-right: 8px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background: #45a049;
+        }
+
+        .todo-lists-elem {
+            margin-top: 20px;
+        }
+
+        .main_todo_div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .main_todo_div li {
+            list-style: none;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .deleteBtn {
+            padding: 5px 10px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .deleteBtn:hover {
+            background: #c0392b;
+        }
+    </style>
 </head>
 <body>
     <h1>Todo List</h1>
@@ -19,20 +99,19 @@
         const mainTodoElem = document.querySelector(".todo-lists-elem");
         const inputValue = document.getElementById("inputValue");
 
-        
         const getTodoListFromLocalStorage = () =>{
-            return JSON.parse(getItem("yourTodoList"));
+            return JSON.parse(localStorage.getItem("yourTodoList")) || [];
         };
         const addTodoListLocalStorage = (localTodoLists) =>{
             return localStorage.setItem("yourTodoList", JSON.stringify(localTodoLists));
         }
 
-        let localTodoLists = getTodoListFromLocalStorage() || [];
+        let localTodoLists = getTodoListFromLocalStorage();
 
         const addTodoDynamicElement = (currElement) =>{
             const divElement = document.createElement("div");
             divElement.classList.add("main_todo_div");
-            divElement.innerHTML = `<li> ${currElement} </li> <button class = "deleteBtn"> Delete</Button>`;
+            divElement.innerHTML = `<li>${currElement}</li> <button class="deleteBtn">Delete</button>`;
             mainTodoElem.append(divElement);
         }
 
@@ -40,51 +119,41 @@
             e.preventDefault();
             const todoListValue = inputValue.value.trim();
             inputValue.value = "";
-            if(todoListValue != "" && !localTodoLists.includes(todoListValue)){
+            if(todoListValue !== "" && !localTodoLists.includes(todoListValue)){
                 localTodoLists.push(todoListValue);
                 localTodoLists = [... new Set(localTodoLists)];
-                console.log(localTodoLists);
-                localStorage.setItem("yourTodoList", JSON.stringify(localTodoLists));
-
-                add(currElement);
+                addTodoListLocalStorage(localTodoLists);
+                addTodoDynamicElement(todoListValue);
             }
         };
 
         const showTodoList = () => {
-            console.log(localTodoLists);
             localTodoLists.forEach((currElement) => {
-                addTodoDynamicElement(todoListValue);
+                addTodoDynamicElement(currElement);
             });
         };
         showTodoList();
 
-        removeTodoElement = (e) =>{
-            const todoRemove = (e.target);
+        const removeTodoElement = (e) =>{
+            const todoRemove = e.target;
             let todoListContent = todoRemove.previousElementSibling.innerText;
             let parentElem = todoRemove.parentElement;
-            console.log(todoListContent);
-
 
             localTodoLists = localTodoLists.filter((currTodo) =>{
-                return currTodo != todoListContent.toLowerCase();
+                return currTodo !== todoListContent;
             });
-            
+
             addTodoListLocalStorage(localTodoLists);
             parentElem.remove();
         };
-        
 
-
-        mainTodoElem.addEventListener("Click", (e) =>{
-            e.preventDefault();
-
+        mainTodoElem.addEventListener("click", (e) =>{
             if(e.target.classList.contains("deleteBtn")){
                 removeTodoElement(e);
             }
         });
 
-        document.querySelector(".btn").addEventListener("Click", (e) => {
-            
+        document.querySelector(".btn").addEventListener("click", (e) => {
             addTodoList(e);
         });
 
